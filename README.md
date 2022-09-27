@@ -29,10 +29,15 @@ Necessary packages, [randomForest](https://www.rdocumentation.org/packages/rando
 
 ```{r}
 
-# Install devtools in R
 
+## Only if you don't have these packages
 install.packages("randomForest")
 install.packages("glmnet")
+# Install devtools in R
+install.packages("devtools")
+
+## Install our package
+devtools::install_github("caeseriousli/mammalMethylationPredictors")
 
 ```
 
@@ -47,7 +52,7 @@ Simply load the normalized data, by SeSAme pipeline (see Arneson, 2021, and shor
 dat0 <- readRDS("PATH_TO_YOUR_DATA")
 
 # fit the predictor
-results = predictLifespan(dt = dat0, arrayType = "40K")
+results = mammalMethylationPredictors::predictLifespan(dt = dat0, arrayType = "40K")
 
 ```
 

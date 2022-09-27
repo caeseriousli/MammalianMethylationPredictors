@@ -4,14 +4,14 @@
 \alias{predictLifespan}
 \title{Predict lifespan, given normalized Mammalian array data.}
 \usage{
-predictLifespan(dt = dat0, version = "40K", returnType = "moreInfo")
+predictLifespan(dt = NULL, arrayType = "40K", predictorType = "final")
 }
 \arguments{
 \item{dt}{an nxp matrix, or data frame; normalized Mammalian array data; must have been normalized by SeSAme normalization pipeline}
 
-\item{version}{specifies which variant of the predictor to us; default to "40K"; can be one of c("40K", "320K40K")}
+\item{predictorType}{one of c("final", "EPIC") return just a vector or a matrix including second guess and their prediction probabilities}
 
-\item{returnType}{one of c("vector", "moreInfo") return just a vector or a matrix including second guess and their prediction probabilities}
+\item{version}{specifies which variant of the predictor to us; default to "40K"; can be one of c("40K", "320K40K")}
 }
 \value{
 a vector or a matrix of predicted values
@@ -25,7 +25,7 @@ require(mammalMethylationPredictors)
 dat0 <- readRDS("PATH_TO_YOUR_DATA")
 
 # fit the predictor
-results = predictLifespan(dt = dat0, version = "40K")
+results = mammalMethylationPredictors::predictLifespan(dt = dat0, arrayType = "40K")
 
 }
 \references{

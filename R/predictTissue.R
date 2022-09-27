@@ -11,7 +11,7 @@
 #' dat0 <- readRDS("PATH_TO_YOUR_DATA")
 #'
 #' # fit the predictor
-#' results = predictTissue(dt = dat0, arrayType = "40K", returnType = "moreInfo")
+#' results = mammalMethylationPredictors::predictTissue(dt = dat0, arrayType = "40K", returnType = "moreInfo")
 #'
 #' @references
 #' A. Arneson et al., A mammalian methylation array for profiling methylation

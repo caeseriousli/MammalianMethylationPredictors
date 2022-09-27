@@ -11,7 +11,7 @@
 #' dat0 <- readRDS("PATH_TO_YOUR_DATA")
 #'
 #' # fit the predictor
-#' results = predictLifespan(dt = dat0, arrayType = "40K")
+#' results = mammalMethylationPredictors::predictLifespan(dt = dat0, arrayType = "40K")
 #'
 #' @references
 #' A. Arneson et al., A mammalian methylation array for profiling methylation
