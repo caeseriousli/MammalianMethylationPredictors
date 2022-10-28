@@ -8,16 +8,20 @@
 #' @examples
 #' require(mammalMethylationPredictors)
 #' # Load your normalized DNA methylation data. For normalization pipelines, see shorvath/MammalianMethylationConsortium (Arneson, 2021)
-#' dat0 <- readRDS("PATH_TO_YOUR_DATA")
+#' mydata <- readRDS("PATH_TO_YOUR_DATA")
 #'
 #' # fit the predictor
-#' results = predictSex(dt = dat0, arrayType = "40K", returnType = "moreInfo")
+#' results = predictSex(dt = mydata, arrayType = "40K", returnType = "moreInfo")
 #'
 #' @references
-#' A. Arneson et al., A mammalian methylation array for profiling methylation
-#' levels at conserved sequences. Nature Communications 13, 1-13 (2022).
-#' C. Li et al., Epigenetic predictors of maximum lifespan and
-#' other life history traits in mammals. bioRxiv,  (2021).
+#' C. Li et al., Epigenetic predictors of maximum lifespan and other life history traits in mammals. bioRxiv, (2021).
+#'
+#' Haghani, et al., DNA Methylation Networks Underlying Mammalian Traits, bioRxiv, (2021).
+#'
+#' A. T. Lu et al., Universal DNA methylation age across mammalian tissues. bioRxiv, 2021.2001.2018.426733 (2021)
+#'
+#' A. Arneson et al., A mammalian methylation array for profiling methylation levels at conserved sequences. Nature Communications 13, 1-13 (2022).
+
 
 predictSex <- function(dt = NULL, arrayType = "40K", returnType = "moreInfo") {
 
@@ -32,7 +36,9 @@ predictSex <- function(dt = NULL, arrayType = "40K", returnType = "moreInfo") {
   # sort(sapply(fit$fit,function(x){object.size(x)}))
 
   ## Load the Sex Predictor
-  fit = read.csv(paste0("./Predictors/FemalePredictor_Overlap320K40K.csv"), stringsAsFactors = FALSE)
+  mydata <- system.file("extdata", "FemalePredictor_Overlap320K40K.csv", package = "mammalMethylationPredictors")
+  fit = read.csv(mydata, stringsAsFactors = FALSE)
+  # fit = read.csv(paste0("./Predictors/FemalePredictor_Overlap320K40K.csv"), stringsAsFactors = FALSE)
 
   # Progress bar
   setTxtProgressBar(pb,2)
@@ -41,7 +47,8 @@ predictSex <- function(dt = NULL, arrayType = "40K", returnType = "moreInfo") {
     dt = dt[, fit[-1, "CpG"]]
 
   } else if(arrayType == "320K") {
-    dictionary = readRDS("./inst/Mapping_OneToOneProbes_320K_40K.RDS")
+    mydata <- system.file("extdata", "Mapping_OneToOneProbes_320K_40K.RDS", package = "mammalMethylationPredictors")
+    dictionary = readRDS(mydata)
 
     ## Note that the feature names used in 1-1 fit$featureNames ensures CGid are unique
     ## Now First re-order the Amin dictionary to translate 320K colnames to RF feature names (40K CGid)

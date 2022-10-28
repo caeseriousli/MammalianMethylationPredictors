@@ -11,11 +11,11 @@ Install missing packages, mainly for internal use.
 }
 \examples{
 require(mammalMethylationPredictors)
-installMissingPackages()
+mammalMethylationPredictors::installMissingPackages()
 }
 \references{
-A. Arneson et al., A mammalian methylation array for profiling methylation
-levels at conserved sequences. Nature Communications 13, 1-13 (2022).
 C. Li et al., Epigenetic predictors of maximum lifespan and
 other life history traits in mammals. bioRxiv,  (2021).
+A. Arneson et al., A mammalian methylation array for profiling methylation
+levels at conserved sequences. Nature Communications 13, 1-13 (2022).
 }

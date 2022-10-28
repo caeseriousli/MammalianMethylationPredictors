@@ -8,18 +8,27 @@
 #' @examples
 #' require(mammalMethylationPredictors)
 #' # Load your normalized DNA methylation data. For normalization pipelines, see shorvath/MammalianMethylationConsortium (Arneson)
-#' dat0 <- readRDS("PATH_TO_YOUR_DATA")
+#' mydata <- readRDS("PATH_TO_YOUR_DATA")
 #'
 #' # fit the predictor
-#' results = mammalMethylationPredictors::predictTissue(dt = dat0, arrayType = "40K", returnType = "moreInfo")
+#' results = mammalMethylationPredictors::predictTissue(dt = mydata, arrayType = "40K", returnType = "moreInfo")
 #'
 #' @references
-#' A. Arneson et al., A mammalian methylation array for profiling methylation
-#' levels at conserved sequences. Nature Communications 13, 1-13 (2022).
-#' C. Li et al., Epigenetic predictors of maximum lifespan and
-#' other life history traits in mammals. bioRxiv,  (2021).
+#' C. Li et al., Epigenetic predictors of maximum lifespan and other life history traits in mammals. bioRxiv, (2021).
+#'
+#' Haghani, et al., DNA Methylation Networks Underlying Mammalian Traits, bioRxiv, (2021).
+#'
+#' A. T. Lu et al., Universal DNA methylation age across mammalian tissues. bioRxiv, 2021.2001.2018.426733 (2021)
+#'
+#' A. Arneson et al., A mammalian methylation array for profiling methylation levels at conserved sequences. Nature Communications 13, 1-13 (2022).
 
 predictTissue <- function(dt = NULL, arrayType = "40K", returnType = "moreInfo") {
+
+  installMissingPackages()
+  library(randomForest)
+  # Progress bar
+  pb = txtProgressBar(min = 0, max = 3, initial = 0, style = 3)
+  setTxtProgressBar(pb,1)
 
   predictWhat = "Tissue"
   if(arrayType == "40K" & ncol(dt) > 4e4) {
@@ -28,13 +37,18 @@ predictTissue <- function(dt = NULL, arrayType = "40K", returnType = "moreInfo")
 
   # sort(sapply(fit$fit,function(x){object.size(x)}))
 
+  # Progress
+  setTxtProgressBar(pb,2)
+
   ## Load the Tissue Predictor
-  fit = readRDS(paste0("./Predictors/Tissue_Overlap320K40K_Filter5samples_100trees_randomForest.RDS"))
+  mydata <- system.file("extdata", "Tissue_Overlap320K40K_Filter5samples_100trees_randomForest.RDS", package = "mammalMethylationPredictors")
+  fit = readRDS(mydata)
   if(arrayType == "40K") {
     dt = dt[, fit$featureNames]
 
   } else if(arrayType == "320K") {
-    dictionary = readRDS("./inst/Mapping_OneToOneProbes_320K_40K.RDS")
+    mydata <- system.file("extdata", "Mapping_OneToOneProbes_320K_40K.RDS", package = "mammalMethylationPredictors")
+    dictionary = readRDS(mydata)
 
     ## Note that the feature names used in 1-1 fit$featureNames ensures CGid are unique
     ## Now First re-order the Amin dictionary to translate 320K colnames to RF feature names (40K CGid)
@@ -44,6 +58,10 @@ predictTissue <- function(dt = NULL, arrayType = "40K", returnType = "moreInfo")
 
     dt = dt[, fit$featureNames]
   }
+
+  # Progress
+  setTxtProgressBar(pb,3)
+  close(pb)
 
   if(returnType == "moreInfo") {
     temp = predict(fit$fit, dt, type="prob")

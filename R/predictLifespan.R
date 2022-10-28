@@ -1,4 +1,4 @@
-#' Predict lifespan, given normalized Mammalian array data.
+#' Predict maximum lifespan, given normalized Mammalian array data.
 #'
 #' @param dt an nxp matrix, or data frame; normalized Mammalian array data; must have been normalized by SeSAme normalization pipeline
 #' @param version specifies which variant of the predictor to us; default to "40K"; can be one of c("40K", "320K40K")
@@ -8,18 +8,24 @@
 #' @examples
 #' require(mammalMethylationPredictors)
 #' # Load your normalized DNA methylation data. For normalization pipelines, see shorvath/MammalianMethylationConsortium (Arneson)
-#' dat0 <- readRDS("PATH_TO_YOUR_DATA")
+#' mydata <- readRDS("PATH_TO_YOUR_DATA")
 #'
 #' # fit the predictor
-#' results = mammalMethylationPredictors::predictLifespan(dt = dat0, arrayType = "40K")
+#' results = mammalMethylationPredictors::predictMaximumLifespan(dt = mydata, arrayType = "40K")
 #'
 #' @references
-#' A. Arneson et al., A mammalian methylation array for profiling methylation
-#' levels at conserved sequences. Nature Communications 13, 1-13 (2022).
-#' C. Li et al., Epigenetic predictors of maximum lifespan and
-#' other life history traits in mammals. bioRxiv,  (2021).
+#' C. Li et al., Epigenetic predictors of maximum lifespan and other life history traits in mammals. bioRxiv, (2021).
+#'
+#' Haghani, et al., DNA Methylation Networks Underlying Mammalian Traits, bioRxiv, (2021).
+#'
+#' A. T. Lu et al., Universal DNA methylation age across mammalian tissues. bioRxiv, 2021.2001.2018.426733 (2021)
+#'
+#' A. Arneson et al., A mammalian methylation array for profiling methylation levels at conserved sequences. Nature Communications 13, 1-13 (2022).
 
-predictLifespan <- function(dt = NULL, arrayType = "40K", predictorType = "final") {
+
+predictMaximumLifespan <- function(dt = NULL, arrayType = "40K", predictorType = "final") {
+
+    installMissingPackages()
 
     if(arrayType == "40K" & ncol(dt) > 4e4) {
       arrayType = "320K"
@@ -36,7 +42,8 @@ predictLifespan <- function(dt = NULL, arrayType = "40K", predictorType = "final
     # sort(sapply(fit$fit,function(x){object.size(x)}))
 
     ## Load the Sex Predictor
-    fit = read.csv(paste0("./Predictors/LifespanPredictor_40K_Li2021.csv"), stringsAsFactors = FALSE)
+    mydata <- system.file("extdata", "LifespanPredictor_40K_Li2021.csv", package = "mammalMethylationPredictors")
+    fit = read.csv(mydata, stringsAsFactors = FALSE)
 
     # Progress bar
     setTxtProgressBar(pb,2)
@@ -45,7 +52,8 @@ predictLifespan <- function(dt = NULL, arrayType = "40K", predictorType = "final
       # dt = dt[, fit[-1, "CpG"]]
 
     } else if(arrayType == "320K") {
-      dictionary = readRDS("./inst/Mapping_OneToOneProbes_320K_40K.RDS")
+      mydata <- system.file("extdata", "Mapping_OneToOneProbes_320K_40K.RDS", package = "mammalMethylationPredictors")
+      dictionary = readRDS(mydata)
 
       ## Note that the feature names used in 1-1 fit$featureNames ensures CGid are unique
       ## Now First re-order the Amin dictionary to translate 320K colnames to RF feature names (40K CGid)
